@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    units: imperial
+    lang: en
+    api_key: 05d6d5eeb3970080ee27cff1e2c00b54

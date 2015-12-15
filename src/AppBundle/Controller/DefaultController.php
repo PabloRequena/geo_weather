@@ -55,9 +55,9 @@ class DefaultController extends Controller
 
         $owm = new OpenWeatherMap();
 
-        $units = 'imperial';
-        $lang = 'en';
-        $api_key = '05d6d5eeb3970080ee27cff1e2c00b54';
+        $units = $this->container->getParameter('units');
+        $lang = $this->container->getParameter('lang');
+        $api_key = $this->container->getParameter('api_key');
         $dat = new \DateTime($date);
 
 
