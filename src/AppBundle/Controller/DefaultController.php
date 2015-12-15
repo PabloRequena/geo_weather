@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use AppBundle\Entity\Datos;
 
 class DefaultController extends Controller
 {
@@ -34,6 +35,8 @@ class DefaultController extends Controller
 
         $geoweather_array = array_merge($weather_array, $geo_array);
 
+//        $this->saveDataAction($geoweather_array);
+
         $response = new Response();
         $response->setContent(json_encode($geoweather_array, JSON_PRETTY_PRINT));
         $response->headers->set('Content-Type', 'application/json');
@@ -51,14 +54,20 @@ class DefaultController extends Controller
         $data['lon'] = $long;
 
         $owm = new OpenWeatherMap();
-        $units = 'metric';
-        $lang = 'sp';
+
+        $units = 'imperial';
+        $lang = 'en';
+        $api_key = '05d6d5eeb3970080ee27cff1e2c00b54';
+        $dat = new \DateTime($date);
+
+
         $array_lat_lon = array();
         $array_lat_lon['lat'] = $lat;
         $array_lat_lon['lon'] = $long;
 
         try {
-            $weather = $owm->getWeather($array_lat_lon, $units, $lang, 'a68fff651f1ea4effc207914c06d3268');
+//            $weather = $owm->getWeather($array_lat_lon, $units, $lang, $api_key);
+            $weather = $owm->getWeatherHistory($array_lat_lon, $dat, 1, $type = 'hour', $units, $lang, $api_key);
         } catch(OWMException $e) {
             echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
             echo "<br />\n";
@@ -66,6 +75,11 @@ class DefaultController extends Controller
             echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
             echo "<br />\n";
         }
+
+        echo '<pre>';
+        print_r($weather);
+        echo '</pre>';
+        die;
 
         $data['weather'] = $weather->weather->description;
 
@@ -81,7 +95,6 @@ class DefaultController extends Controller
         $output= json_decode($geocode);
 
         for($j=0;$j<count($output->results[0]->address_components);$j++){
-//            echo $output->results[0]->address_components[$j]->types[0]." = ".$output->results[0]->address_components[$j]->long_name.'<br/>';
             if($output->results[0]->address_components[$j]->types[0] == "administrative_area_level_2")
                 $data['city'] = $output->results[0]->address_components[$j]->long_name;
             elseif($output->results[0]->address_components[$j]->types[0] == "administrative_area_level_1")
@@ -91,5 +104,22 @@ class DefaultController extends Controller
         }
 
         return $data;
+    }
+
+    private function saveDataAction($data)
+    {
+        $time = strtotime($data['date']);
+
+        $newformat = date('Y-m-d',$time);
+
+        $datos = new Datos();
+        $datos->setDate($newformat);
+//        $datos->setHour();
+
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($datos);
+        $em->flush();
     }
 }
