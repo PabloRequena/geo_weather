@@ -35,7 +35,7 @@ class DefaultController extends Controller
 
         $geoweather_array = array_merge($weather_array, $geo_array);
 
-//        $this->saveDataAction($geoweather_array);
+        $this->saveDataAction($geoweather_array);
 
         $response = new Response();
         $response->setContent(json_encode($geoweather_array, JSON_PRETTY_PRINT));
@@ -66,8 +66,8 @@ class DefaultController extends Controller
         $array_lat_lon['lon'] = $long;
 
         try {
-//            $weather = $owm->getWeather($array_lat_lon, $units, $lang, $api_key);
-            $weather = $owm->getWeatherHistory($array_lat_lon, $dat, 1, $type = 'hour', $units, $lang, $api_key);
+            $weather = $owm->getWeather($array_lat_lon, $units, $lang, $api_key);
+//            $weather = $owm->getWeatherHistory($array_lat_lon, $dat, 1, $type = 'hour', $units, $lang, $api_key);
         } catch(OWMException $e) {
             echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
             echo "<br />\n";
@@ -75,11 +75,6 @@ class DefaultController extends Controller
             echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
             echo "<br />\n";
         }
-
-        echo '<pre>';
-        print_r($weather);
-        echo '</pre>';
-        die;
 
         $data['weather'] = $weather->weather->description;
 
@@ -108,13 +103,16 @@ class DefaultController extends Controller
 
     private function saveDataAction($data)
     {
-        $time = strtotime($data['date']);
-
-        $newformat = date('Y-m-d',$time);
+        $fecha = new \DateTime($data['date'].' '.$data['hour']);
 
         $datos = new Datos();
-        $datos->setDate($newformat);
-//        $datos->setHour();
+        $datos->setDate($fecha);
+        $datos->setLat($data['lat']);
+        $datos->setLon($data['lon']);
+        $datos->setWeather($data['weather']);
+        $datos->setCity($data['city']);
+        $datos->setRegion($data['region']);
+        $datos->setCountry($data['country']);
 
 
         $em = $this->getDoctrine()->getManager();

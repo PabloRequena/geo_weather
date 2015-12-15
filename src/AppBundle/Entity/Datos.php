@@ -24,16 +24,9 @@ class Datos
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="date")
+     * @ORM\Column(name="date", type="datetime")
      */
     private $date;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="hour", type="time")
-     */
-    private $hour;
 
     /**
      * @var float
@@ -112,29 +105,6 @@ class Datos
         return $this->date;
     }
 
-    /**
-     * Set hour
-     *
-     * @param \DateTime $hour
-     *
-     * @return Datos
-     */
-    public function setHour($hour)
-    {
-        $this->hour = $hour;
-
-        return $this;
-    }
-
-    /**
-     * Get hour
-     *
-     * @return \DateTime
-     */
-    public function getHour()
-    {
-        return $this->hour;
-    }
 
     /**
      * Set lat
