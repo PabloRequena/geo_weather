@@ -6,6 +6,7 @@ Requisitos mínimos:
 -	MySql
 -	Entorno Apache con soporte para PHP/MySql
 -	Composer
+
 Sugerencias:
 -	Symfony2 
 
