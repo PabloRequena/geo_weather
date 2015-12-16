@@ -28,7 +28,7 @@ Instalación:
     
     php bin/console doctrine:schema:update –force
     
-4.	Si no disponemos de symfony2 instalado deberemos crear la base de datos e importar el script sql existente en GitHub.
+4.	Si no disponemos de symfony2 instalado deberemos ejecutar el script sql existente en la carpeta bd del proyecto en GitHub.
 
 Uso:
 
